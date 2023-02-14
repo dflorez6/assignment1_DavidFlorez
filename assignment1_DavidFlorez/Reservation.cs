@@ -56,26 +56,6 @@ namespace assignment1_DavidFlorez
 
         }
 
-
-        /*
-		
-		// Displaying Values inside array		
-		    for (int i = 0; i < seatsArray.GetLength(0); i++) // For 2D arrays - Remember to use .GetLength(0) in the outer loop
-		    {
-			    for (int j = 0; j < seatsArray.GetLength(1); j++) // For 2D arrays - Remember to use .GetLength(1) in the nested loop
-			    {
-				    Console.Write(seatsArray[i,j]);				
-			    }
-			    Console.Write("\n");
-			    Console.WriteLine("***");
-		    }
-        */
-
-        //================
-        // Methods
-        //================
-
-
         //================
         // Static Methods
         //================
@@ -154,11 +134,11 @@ namespace assignment1_DavidFlorez
                     {
                         // Cancel Booking: Replace current value of Reservation.Seats[rowIndex, columnIndex] with "EMPTY" to make seat available again
                         Reservation.Seats[rowIndex, columnIndex] = "EMPTY";
-                        
+
                         // Decrease Reservation.ReservedSeats
                         Reservation.ReservedSeats--;
                     }
-                    
+
                     return 1;
                 }
             }
@@ -201,23 +181,47 @@ namespace assignment1_DavidFlorez
             }
         }
 
-        // FillAllSeats():
-        // 
-        public static void FillAllSeats()
+        // FillAllSeats(): Receives 1 parameter customerName
+        // Books all "EMPTY" chairs to the passed customerName parameter
+        public static void FillAllSeats(string customerName)
         {
-            /*
-             5.	Add a “Fill all seats” button. Clicking this button will fill all the vacant seats, up to the maximum of all 12 seats. 
-                You must still enter a person’s name but then that name will be used for all the seats filled by this action.
-            */
+            // Inserts customerName in "EMPTY" seat by traversing the 2D Array
+            for (int i = 0; i < Reservation.Seats.GetLength(0); i++)
+            {
+                for (int j = 0; j < Reservation.Seats.GetLength(1); j++)
+                {
 
+                    if (Reservation.Seats[i, j] == "EMPTY")
+                    {
+                        Reservation.Seats[i, j] = customerName;
+                    }
+
+                }
+            }
+
+            // Updates Reserved Seats
+            Reservation.ReservedSeats = Reservation.TotalCapacity;
 
         }
 
         // CancelAllBookings():
-        //
+        // Cancels all bookings & clears waiting list
         public static void CancelAllBookings()
         {
+            // Changes all seats to "EMPTY"
+            for (int i = 0; i < Reservation.Seats.GetLength(0); i++)
+            {
+                for (int j = 0; j < Reservation.Seats.GetLength(1); j++)
+                {
+                    Reservation.Seats[i, j] = "EMPTY";
+                }
+            }
 
+            // Clears Waiting List
+            Reservation.WaitingList.Clear();
+
+            // Resets Reserved Seats
+            Reservation.ReservedSeats = 0;
         }
 
 
