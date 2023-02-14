@@ -27,33 +27,49 @@ namespace assignment1_DavidFlorez
             string selectedColumnText;
             int selectedRowIndex; // If returns -1 == no row selected
             int selectedColumnIndex; // If returns -1 == no column selected
-            string customerName = CustomerNameValidated();
+            string customerName; // used for out parameter
 
-            // Using out parameter to return multiple string values from the Method
-            SelectedRowColumnText(out selectedRowText, out selectedRowIndex, out selectedColumnText, out selectedColumnIndex);
-
-            // Concatenated button that represents a seat (e.g. btnA1)
-            string btnTarget = $"btn{selectedRowText}{selectedColumnText}";
-
-            // Calling BookSeat Method from Class Reservation
-            // If true: reserve Seat, reduce Capacity, change Seat (button) color & display appropiate text.
-            // If False: Add to waiting list & display appropiate text.
-            if (Reservation.BookSeat(selectedRowIndex, selectedColumnIndex, customerName))
+            // Evaluates if user has selected Row & Columns from ListBox
+            // Using out parameter to return multiple string values from the Method                   
+            if (SelectedRowColumnText(out selectedRowText, out selectedRowIndex, out selectedColumnText, out selectedColumnIndex))
             {
-                // Outputs message to show that a new customer has booked a seat
-                lblOutput.Text += $"{customerName} was booked in seat {selectedRowText}{selectedColumnText}";
 
-                // Changes Seat Color to represent that it has been taken
-                ButtonReservedSeat(btnTarget, selectedRowIndex, selectedColumnIndex); 
+                // Validates Customer Name is not null or blank
+                if (CustomerNameValidated(out customerName))
+                {
+                    // Concatenated button that represents a seat (e.g. btnA1)
+                    string btnTarget = $"btn{selectedRowText}{selectedColumnText}";
+
+                    // Calling BookSeat Method from Class Reservation
+                    // If true: reserve Seat, reduce Capacity, change Seat (button) color & display appropiate text.
+                    // If False: Add to waiting list & display appropiate text.
+                    if (Reservation.BookSeat(selectedRowIndex, selectedColumnIndex, customerName))
+                    {
+                        // Outputs message to show that a new customer has booked a seat
+                        lblOutput.Text = $"{customerName} was booked in seat {selectedRowText}{selectedColumnText}";
+
+                        // Changes Seat Color to represent that it has been taken
+                        ButtonReservedSeat(btnTarget, selectedRowIndex, selectedColumnIndex);
+                    }
+                    else
+                    {
+                        // Outputs message to show that a new customer has been added to the Waiting List
+                        lblOutput.Text = $"{customerName} was added to the waiting list";
+                    }
+
+                    // Output Capacity
+                    lblCapacity.Text = CapacityIndicator();
+                }
+                else
+                {
+                    lblOutput.Text = "Customer name cannot be empty. ";
+                }
             }
             else
             {
-                // Outputs message to show that a new customer has been added to the Waiting List
-                lblOutput.Text += $"{customerName} was added to the waiting list";
+                lblOutput.Text = "Make sure you have selected a row and column. ";
             }
 
-            // Output Capacity
-            lblCapacity.Text = CapacityIndicator();
 
             // TODO: Remove / Comment this code when done
             // Prints values inside Reservation.Seats (2D Array)
@@ -82,35 +98,132 @@ namespace assignment1_DavidFlorez
         // Cancel
         private void btnCancel_Click(object sender, EventArgs e)
         {
+            // Variable Declaration (used for out parameters)         
+            string selectedRowText;
+            string selectedColumnText;
+            int selectedRowIndex; // If returns -1 == no row selected
+            int selectedColumnIndex; // If returns -1 == no column selected
+            string customerName; // used for out parameter
+
+            // Evaluates if user has selected Row & Columns from ListBox
+            // Using out parameter to return multiple string values from the Method
+            if (SelectedRowColumnText(out selectedRowText, out selectedRowIndex, out selectedColumnText, out selectedColumnIndex))
+            {
+                // Concatenated button that represents a seat (e.g. btnA1)
+                string btnTarget = $"btn{selectedRowText}{selectedColumnText}";
+
+                // Calling CancelSeat Method from Class Reservation
+                // If true: reserve Seat, reduce Capacity, change Seat (button) color & display appropiate text.
+                // If False: Add to waiting list & display appropiate text.
+                switch (Reservation.CancelSeat(selectedRowIndex, selectedColumnIndex, out customerName))
+                {
+                    // Seat taken & customers in the Waiting List
+                    case 0:
+                        lblOutput.Text = $"Customer {customerName} was booked from the Waiting List. ";
+                        
+                        // Changes Seat Color to represent that it has been taken
+                        ButtonReservedSeat(btnTarget, selectedRowIndex, selectedColumnIndex);
+
+                        // Output Capacity
+                        lblCapacity.Text = CapacityIndicator();
+                        break;
+
+                    // Seat taken & no customers in the Waiting List
+                    case 1:                        
+                        // Changes Seat Color to represent that it is now empty
+                        ButtonEmptySeat(btnTarget, selectedRowIndex, selectedColumnIndex);
+
+                        // Output
+                        lblCapacity.Text = CapacityIndicator();
+                        lblOutput.Text = $"The booking for {customerName} was successfully canceled. ";
+
+                        break;
+
+                    // Seat is empty
+                    case 2:
+                        lblOutput.Text = $"The seat at {selectedRowText}{selectedColumnText} was not booked. Nothing to cancel. ";
+                        break;
+                }
+            }
+            else
+            {
+                lblOutput.Text = "Make sure you have selected a row and column. ";
+            }
+
+
+            // TODO: Remove / Comment this code when done
+            // Prints values inside Reservation.Seats (2D Array)
+            Console.WriteLine("Seats: ");
+            for (int i = 0; i < Reservation.Seats.GetLength(0); i++) // For 2D arrays - Remember to use .GetLength(0) in the outer loop
+            {
+                for (int j = 0; j < Reservation.Seats.GetLength(1); j++) // For 2D arrays - Remember to use .GetLength(1) in the nested loop
+                {
+                    Console.Write(Reservation.Seats[i, j]);
+                    Console.Write(" ");
+                }
+                Console.Write("\n");
+                Console.WriteLine("***");
+            }
+
+            // TODO: Remove / Comment this code when done
+            // Prints values inside Reservation.WaitingList (Array)
+            Console.WriteLine("Waiting List: ");
+            for (int i = 0; i < Reservation.WaitingList.Count; i++) // For a List T, instead of .Length() use .Count() to get # elements for the Loop
+            {
+                Console.WriteLine(Reservation.WaitingList[i]);
+            }
+
+
+            /*
+            if (true)
+            {
+                // Outputs message to show that a new customer has booked a seat
+                lblOutput.Text += $"{customerName} was booked in seat {selectedRowText}{selectedColumnText}";
+
+                // Changes Seat Color to represent that it has been taken
+                ButtonReservedSeat(btnTarget, selectedRowIndex, selectedColumnIndex);
+            }
+            else
+            {
+                // Outputs message to show that a new customer has been added to the Waiting List
+                lblOutput.Text += $"{customerName} was added to the waiting list";
+            }
+
+            // Output Capacity
+            lblCapacity.Text = CapacityIndicator();
+            */
 
         }
 
         // Add to Watchlist
         private void btnWatchlist_Click(object sender, EventArgs e)
         {
-            // Variable Declaration (used for out parameters)         
-            string selectedRowText;
-            string selectedColumnText;
-            int selectedRowIndex; // If returns -1 == no row selected
-            int selectedColumnIndex; // If returns -1 == no column selected
-            string customerName = CustomerNameValidated();
+            // Variable Declaration (used for out parameters)
+            string customerName;
 
-            // Using out parameter to return multiple string values from the Method
-            SelectedRowColumnText(out selectedRowText, out selectedRowIndex, out selectedColumnText, out selectedColumnIndex);
-
-            // Calling AddToWaitingList Method from Class Reservation
-            // If true: Displays "Seats are available" text.
-            // If False: Add to waiting list & display appropiate text.
-            if (Reservation.AddToWaitingList(selectedRowIndex, selectedColumnIndex, customerName))
+            // Validates Customer Name is not null or blank
+            if (CustomerNameValidated(out customerName))
             {
-                lblOutput.Text += $"Seats are available.";
+                // Calling AddToWaitingList Method from Class Reservation
+                // If true: Displays "Seats are available" text.
+                // If False: Add to waiting list & display appropiate text.
+                if (Reservation.AddToWaitingList(customerName))
+                {
+                    lblOutput.Text = $"Seats are available.";
+                }
+                else
+                {
+                    // Outputs message to show that a new customer has been added to the Waiting List
+                    lblOutput.Text = $"{customerName} was added to the waiting list";
+                }
+
+                // Output Capacity
+                lblCapacity.Text = CapacityIndicator();
             }
             else
             {
-                // Outputs message to show that a new customer has been added to the Waiting List
-                lblOutput.Text += $"{customerName} was added to the waiting list";
-            }            
-
+                lblOutput.Text = "Customer name cannot be empty. ";
+            }
         }
 
         // Fill All Seats
@@ -161,7 +274,7 @@ namespace assignment1_DavidFlorez
         // Helper Methods
         //================
         // Validates that the user has selected a Row & a Column from the List Boxes. If selection is empty a message will be displayed.
-        public void SelectedRowColumnText(out string selectedRowText, out int selectedRowIndex, out string selectedColumnText, out int selectedColumnIndex)
+        public bool SelectedRowColumnText(out string selectedRowText, out int selectedRowIndex, out string selectedColumnText, out int selectedColumnIndex)
         {
             // Initial Declarations
             selectedRowText = null;
@@ -173,6 +286,7 @@ namespace assignment1_DavidFlorez
             if (lsbRows.SelectedIndex == -1 || lsbColumns.SelectedIndex == -1)
             {
                 lblOutput.Text = "Make sure you have selected a row and column. ";
+                return false;
             }
             else
             {
@@ -181,13 +295,28 @@ namespace assignment1_DavidFlorez
                 selectedRowIndex = lsbRows.SelectedIndex;
                 selectedColumnIndex = lsbColumns.SelectedIndex;
                 lblOutput.Text = "";
+                return true;
             }
         }
 
-        // Validates that customer name Textbox is not empty
-        public string CustomerNameValidated()
+        // Validates that customer name Textbox is not empty       
+        public bool CustomerNameValidated(out string customerName)
         {
-            return string.IsNullOrEmpty(txtCustomerName.Text) ? "Customer name cannot be empty. " : txtCustomerName.Text;
+            // Initial Declarations
+            customerName = "";
+
+            // Validates that Customer Name is not Null or Empty
+            if (string.IsNullOrEmpty(txtCustomerName.Text))
+            {
+                // lblOutput.Text = "Customer name cannot be empty. ";
+                return false;
+            }
+            else
+            {
+                customerName = txtCustomerName.Text;
+                lblOutput.Text = "";
+                return true;
+            }
         }
 
         // Checks for button within GroupBox Venue to change color & add ToolTip text to represent a "Reserved Seat"
@@ -206,6 +335,21 @@ namespace assignment1_DavidFlorez
                     control.ForeColor = Color.White;
                     // Calls tooltip.SetToolTip(control, "text") Method to dynamically generate the text in the tooltip on button_hover
                     tipSeats.SetToolTip(control, tooltipText);
+                }
+            }
+        }
+
+        public void ButtonEmptySeat(string btnTarget, int selectedRowIndex, int selectedColumnText)
+        {
+            // Iterates over GroupBox Venue to manipulate the buttons (controls)
+            foreach (Control control in grbVenue.Controls)
+            {
+                if (control.Name == btnTarget)
+                {
+                    control.BackColor = Color.Green;
+                    control.ForeColor = Color.White;
+                    // Calls tooltip.SetToolTip(control, "text") Method to dynamically generate the text in the tooltip on button_hover
+                    tipSeats.SetToolTip(control, "empty");
                 }
             }
         }

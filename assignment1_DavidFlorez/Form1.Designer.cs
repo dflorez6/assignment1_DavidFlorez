@@ -361,11 +361,10 @@
             // 
             this.lblOutput.AutoSize = true;
             this.lblOutput.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.lblOutput.Location = new System.Drawing.Point(35, 318);
+            this.lblOutput.Location = new System.Drawing.Point(35, 355);
             this.lblOutput.Name = "lblOutput";
-            this.lblOutput.Size = new System.Drawing.Size(283, 21);
+            this.lblOutput.Size = new System.Drawing.Size(0, 21);
             this.lblOutput.TabIndex = 13;
-            this.lblOutput.Text = "Bart Simpson was booked in seat B2";
             // 
             // Form1
             // 

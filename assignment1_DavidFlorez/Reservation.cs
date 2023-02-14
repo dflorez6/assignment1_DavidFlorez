@@ -79,7 +79,10 @@ namespace assignment1_DavidFlorez
         //================
         // Static Methods
         //================
-        // TODO: Perhaps pass selectedRowText & selectedColumnText to change color of btnRowColumn to show if seat is available/taken
+        // BookSeat(): takes in multiple parameters to search the exact position of an item inside the 2D Array Reservation.Seats
+        // If the seat is empty, then the customer name is inserted into the 2D Array & Increaseas the count of Reservation.ReservedSeats
+        // If the seat is not empty, the customer will be added to the Waiting List
+        // Return values true & false are used to display conditional messages to the output & capacity labels
         public static bool BookSeat(int rowIndex, int columnIndex, string customerName)
         {
             // Evaluates if seat is available
@@ -104,14 +107,76 @@ namespace assignment1_DavidFlorez
             }
         }
 
-        //
-        public static bool AddToWaitingList(int rowIndex, int columnIndex, string customerName)
+        // CancelSeat(): takes in multiple parameters to search the exact position of an item inside the 2D Array Reservation.Seats
+        // Has 1 out parameter. The Method returns ints 0, 1 & 2 according to the conditions described below.
+        // Cancelation works as follows:
+        // return 0 - If the seat is NOT empty and there are customers in the waiting list -> Replaces customer from Reservation.Seats
+        // at RowColumn indices with 1st customer from the waiting list
+        // return 1 - If the seat is NOT empty and there are NO customers in the waiting list -> Removes customer from Reservation.Seats
+        // and changes the value to "EMPTY" to represent an empty chair inside the 2D Array
+        // return 2 - If the seat is empty -> No actions only displays corresponding message
+        public static int CancelSeat(int rowIndex, int columnIndex, out string customerName)
         {
-            // if (Seats Available)
-            //   Display a Message: "Seats are available"
-            // else (No Seats Available)
-            //   Add Customer to the Waiting List
+            // Initial Declarations
+            customerName = "";
 
+            // Evaluates if seat is taken
+            if (Reservation.Seats[rowIndex, columnIndex] != "EMPTY")
+            {
+                // Evaluates if there are customers in the Waiting List
+                if (Reservation.WaitingList.Count != 0)
+                {
+                    // 0 == "Seat taken & Customers in the Waiting List"
+
+                    // Initial Declarations
+                    string firstCustomerInWaitingList = Reservation.WaitingList[0];
+                    customerName = firstCustomerInWaitingList; // out parameter. Customer will be the 1st in the waiting list
+
+                    // Prompt for confirmation
+                    if (MessageBox.Show("Do you want to cancel this booking?", "Cancel Booking", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                    {
+                        // Inserts first customer into the 2D Array 
+                        Reservation.Seats[rowIndex, columnIndex] = firstCustomerInWaitingList;
+                        Reservation.WaitingList.RemoveAt(0);
+                    }
+
+                    return 0;
+                }
+                else
+                {
+                    // 1 == "Seat taken &  No Customers in the Waiting List"
+
+                    // Initial Declarations
+                    customerName = Reservation.Seats[rowIndex, columnIndex]; // Current customer holding the seat
+
+                    // Prompt for confirmation
+                    if (MessageBox.Show("Do you want to cancel this booking?", "Cancel Booking", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                    {
+                        // Cancel Booking: Replace current value of Reservation.Seats[rowIndex, columnIndex] with "EMPTY" to make seat available again
+                        Reservation.Seats[rowIndex, columnIndex] = "EMPTY";
+                        
+                        // Decrease Reservation.ReservedSeats
+                        Reservation.ReservedSeats--;
+                    }
+                    
+                    return 1;
+                }
+            }
+            else
+            {
+                // 2 == "Seat is Empty"
+                return 2;
+            }
+        }
+
+        // AddToWaitingList(): takes in one parameter to add the customer name into the Waiting List
+        // The variable "availableSeats" keeps track of empty seats in the 2D Array Reservation.Seats
+        // A Foreach Loop is run to verify each seat & see if it is empty/taken
+        // Then an If evaluates if "availableSeats" != 0, If true -> returns true, Else -> adds customer to the Waiting List and returns false
+        // Return values true & false are used to display conditional messages to the output & capacity labels
+        public static bool AddToWaitingList(string customerName)
+        {
+            // Initial Declarations
             int availableSeats = 0;
 
             // Using a Foreach Loop to traverse 2D Arrat Reservation.Seats and look if there are available seats
@@ -119,38 +184,44 @@ namespace assignment1_DavidFlorez
             {
                 if (seat.Equals("EMPTY"))
                 {
-                    availableSeats++;                   
+                    availableSeats++;
                 }
             }
 
             // If availableSeats != 0 True: returns true (will be used to display message "Seats are available")
             // Else: returns false (add customer to the Waiting List & display appropiate message)
-            if (availableSeats != 0) 
+            if (availableSeats != 0)
             {
                 return true;
             }
             else
-            {                
+            {
                 Reservation.WaitingList.Add(customerName);
                 return false;
             }
         }
 
+        // FillAllSeats():
+        // 
+        public static void FillAllSeats()
+        {
+            /*
+             5.	Add a “Fill all seats” button. Clicking this button will fill all the vacant seats, up to the maximum of all 12 seats. 
+                You must still enter a person’s name but then that name will be used for all the seats filled by this action.
+            */
+
+
+        }
+
+        // CancelAllBookings():
+        //
+        public static void CancelAllBookings()
+        {
+
+        }
 
 
     }
-
-    /*
-    Example array (seats withouth a name == empty seats)
-    // To store info -> create a 2d array 3 rows X 4 columns to store data
-    seatsArray = [
-                    ["david", A2, A3, "bailey"],
-                    [B1, B2, "kanut", B4],
-                    [C1, "lina", C3, C4]
-                 ]
-
-
-    */
 
 
 }
