@@ -223,20 +223,6 @@ namespace assignment1_DavidFlorez
             lblOutput.Text = $"All bookings have been canceled and waiting list emptied. ";
             lblCapacity.Text = CapacityIndicator();
 
-            // TODO: Remove / Comment this code when done
-            // Prints values inside Reservation.Seats (2D Array)
-            Console.WriteLine("Seats: ");
-            for (int i = 0; i < Reservation.Seats.GetLength(0); i++) // For 2D arrays - Remember to use .GetLength(0) in the outer loop
-            {
-                for (int j = 0; j < Reservation.Seats.GetLength(1); j++) // For 2D arrays - Remember to use .GetLength(1) in the nested loop
-                {
-                    Console.Write(Reservation.Seats[i, j]);
-                    Console.Write(" ");
-                }
-                Console.Write("\n");
-                Console.WriteLine("***");
-            }
-
         }
 
         //================
