@@ -85,13 +85,11 @@ namespace assignment1_DavidFlorez
             // Evaluates if seat is available
             if (Reservation.Seats[rowIndex, columnIndex] == "EMPTY")
             {
-                Console.WriteLine("Seat is Empty");
-
                 // Inserting value into Seats Array                
                 Reservation.Seats[rowIndex, columnIndex] = customerName;
                 // Reservation.Seats.SetValue(customerName, rowIndex, columnIndex); // Another way of inserting a value into an array using SetValue() Method
 
-                // Decrease Reservation.ReservedSeats
+                // Increase Reservation.ReservedSeats
                 Reservation.ReservedSeats++;
 
                 return true;
@@ -107,7 +105,36 @@ namespace assignment1_DavidFlorez
         }
 
         //
+        public static bool AddToWaitingList(int rowIndex, int columnIndex, string customerName)
+        {
+            // if (Seats Available)
+            //   Display a Message: "Seats are available"
+            // else (No Seats Available)
+            //   Add Customer to the Waiting List
 
+            int availableSeats = 0;
+
+            // Using a Foreach Loop to traverse 2D Arrat Reservation.Seats and look if there are available seats
+            foreach (string seat in Reservation.Seats)
+            {
+                if (seat.Equals("EMPTY"))
+                {
+                    availableSeats++;                   
+                }
+            }
+
+            // If availableSeats != 0 True: returns true (will be used to display message "Seats are available")
+            // Else: returns false (add customer to the Waiting List & display appropiate message)
+            if (availableSeats != 0) 
+            {
+                return true;
+            }
+            else
+            {                
+                Reservation.WaitingList.Add(customerName);
+                return false;
+            }
+        }
 
 
 

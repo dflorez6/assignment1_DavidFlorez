@@ -55,6 +55,7 @@ namespace assignment1_DavidFlorez
             // Output Capacity
             lblCapacity.Text = CapacityIndicator();
 
+            // TODO: Remove / Comment this code when done
             // Prints values inside Reservation.Seats (2D Array)
             Console.WriteLine("Seats: ");
             for (int i = 0; i < Reservation.Seats.GetLength(0); i++) // For 2D arrays - Remember to use .GetLength(0) in the outer loop
@@ -68,18 +69,13 @@ namespace assignment1_DavidFlorez
                 Console.WriteLine("***");
             }
 
+            // TODO: Remove / Comment this code when done
             // Prints values inside Reservation.WaitingList (Array)
             Console.WriteLine("Waiting List: ");
             for (int i = 0; i < Reservation.WaitingList.Count; i++) // For a List T, instead of .Length() use .Count() to get # elements for the Loop
             {
                 Console.WriteLine(Reservation.WaitingList[i]);
             }
-
-
-
-            // Class.Method();
-            // Reservation.BookSeat(row, column, reservationName); // Static Method??? Parameters passed are row, column extracted from ListBox
-
 
         }
 
@@ -102,6 +98,18 @@ namespace assignment1_DavidFlorez
             // Using out parameter to return multiple string values from the Method
             SelectedRowColumnText(out selectedRowText, out selectedRowIndex, out selectedColumnText, out selectedColumnIndex);
 
+            // Calling AddToWaitingList Method from Class Reservation
+            // If true: Displays "Seats are available" text.
+            // If False: Add to waiting list & display appropiate text.
+            if (Reservation.AddToWaitingList(selectedRowIndex, selectedColumnIndex, customerName))
+            {
+                lblOutput.Text += $"Seats are available.";
+            }
+            else
+            {
+                // Outputs message to show that a new customer has been added to the Waiting List
+                lblOutput.Text += $"{customerName} was added to the waiting list";
+            }            
 
         }
 
@@ -127,8 +135,13 @@ namespace assignment1_DavidFlorez
             ReservationInstance();
 
             // Initial Capacity Indicator
-            Console.WriteLine(Reservation.ReservedSeats);
             lblCapacity.Text = CapacityIndicator();
+
+            // Initializes all GroupBox Venue buttons with default tooltip text
+            foreach (Control control in grbVenue.Controls)
+            {
+                tipSeats.SetToolTip(control, "empty");
+            }
         }
 
         // Instantiating Reservation (object)
