@@ -115,37 +115,47 @@ namespace assignment1_DavidFlorez
                 // Concatenated button that represents a seat (e.g. btnA1)
                 string btnTarget = $"btn{selectedRowText}{selectedColumnText}";
 
+                // Prompt for "Cancel Booking" confirmation
+                DialogResult cancelPrompt = MessageBox.Show("Do you want to cancel this booking?", "Cancel Booking", MessageBoxButtons.OKCancel);
+
                 // Calling CancelSeat Method from Class Reservation
                 // If true: reserve Seat, reduce Capacity, change Seat (button) color & display appropiate text.
                 // If False: Add to waiting list & display appropiate text.
-                switch (Reservation.CancelSeat(selectedRowIndex, selectedColumnIndex, out customerName))
+                if (cancelPrompt == DialogResult.OK)
                 {
-                    // Seat taken & customers in the Waiting List
-                    case 0:
-                        lblOutput.Text = $"Customer {customerName} was booked from the Waiting List. ";
+                    switch (Reservation.CancelSeat(selectedRowIndex, selectedColumnIndex, out customerName))
+                    {
+                        // Seat taken & customers in the Waiting List
+                        case 0:
+                            lblOutput.Text = $"Customer {customerName} was booked from the Waiting List. ";
 
-                        // Changes Seat Color to represent that it has been taken
-                        ButtonReservedSeat(btnTarget, selectedRowIndex, selectedColumnIndex);
+                            // Changes Seat Color to represent that it has been taken
+                            ButtonReservedSeat(btnTarget, selectedRowIndex, selectedColumnIndex);
 
-                        // Output Capacity
-                        lblCapacity.Text = CapacityIndicator();
-                        break;
+                            // Output Capacity
+                            lblCapacity.Text = CapacityIndicator();
+                            break;
 
-                    // Seat taken & no customers in the Waiting List
-                    case 1:
-                        // Changes Seat Color to represent that it is now empty
-                        ButtonEmptySeat(btnTarget, selectedRowIndex, selectedColumnIndex);
+                        // Seat taken & no customers in the Waiting List
+                        case 1:
+                            // Changes Seat Color to represent that it is now empty
+                            ButtonEmptySeat(btnTarget, selectedRowIndex, selectedColumnIndex);
 
-                        // Output
-                        lblCapacity.Text = CapacityIndicator();
-                        lblOutput.Text = $"The booking for {customerName} was successfully canceled. ";
+                            // Output
+                            lblCapacity.Text = CapacityIndicator();
+                            lblOutput.Text = $"The booking for {customerName} was successfully canceled. ";
 
-                        break;
+                            break;
 
-                    // Seat is empty
-                    case 2:
-                        lblOutput.Text = $"The seat at {selectedRowText}{selectedColumnText} was not booked. Nothing to cancel. ";
-                        break;
+                        // Seat is empty
+                        case 2:
+                            lblOutput.Text = $"The seat at {selectedRowText}{selectedColumnText} was not booked. Nothing to cancel. ";
+                            break;
+                    }
+                }
+                else
+                {
+                    lblOutput.Text = $"The booking for seat {selectedRowText}{selectedColumnText} was not cancelled. ";
                 }
             }
             else

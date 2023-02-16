@@ -112,13 +112,9 @@ namespace assignment1_DavidFlorez
                     string firstCustomerInWaitingList = Reservation.WaitingList[0];
                     customerName = firstCustomerInWaitingList; // out parameter. Customer will be the 1st in the waiting list
 
-                    // Prompt for confirmation
-                    if (MessageBox.Show("Do you want to cancel this booking?", "Cancel Booking", MessageBoxButtons.OKCancel) == DialogResult.OK)
-                    {
-                        // Inserts first customer into the 2D Array 
-                        Reservation.Seats[rowIndex, columnIndex] = firstCustomerInWaitingList;
-                        Reservation.WaitingList.RemoveAt(0);
-                    }
+                    // Inserts first customer into the 2D Array 
+                    Reservation.Seats[rowIndex, columnIndex] = firstCustomerInWaitingList;
+                    Reservation.WaitingList.RemoveAt(0);
 
                     return 0;
                 }
@@ -129,15 +125,11 @@ namespace assignment1_DavidFlorez
                     // Initial Declarations
                     customerName = Reservation.Seats[rowIndex, columnIndex]; // Current customer holding the seat
 
-                    // Prompt for confirmation
-                    if (MessageBox.Show("Do you want to cancel this booking?", "Cancel Booking", MessageBoxButtons.OKCancel) == DialogResult.OK)
-                    {
-                        // Cancel Booking: Replace current value of Reservation.Seats[rowIndex, columnIndex] with "EMPTY" to make seat available again
-                        Reservation.Seats[rowIndex, columnIndex] = "EMPTY";
+                    // Cancel Booking: Replace current value of Reservation.Seats[rowIndex, columnIndex] with "EMPTY" to make seat available again
+                    Reservation.Seats[rowIndex, columnIndex] = "EMPTY";
 
-                        // Decrease Reservation.ReservedSeats
-                        Reservation.ReservedSeats--;
-                    }
+                    // Decrease Reservation.ReservedSeats
+                    Reservation.ReservedSeats--;
 
                     return 1;
                 }
